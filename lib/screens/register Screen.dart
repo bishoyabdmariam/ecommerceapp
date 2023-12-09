@@ -1,26 +1,23 @@
 import 'package:dio/dio.dart';
-import 'package:ecommerceapp/screens/homeScreen.dart';
-import 'package:ecommerceapp/screens/register%20Screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import '../services/addUser.dart';
 import '../services/getAllUsers.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final dio = Dio();
   final addUser = AddUser(Dio());
   final TextEditingController emailController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController password2Controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.text = "123";
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Login'),
+        title: const Text('Register'),
         centerTitle: true,
       ),
       body: Padding(
@@ -39,44 +36,39 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               TextFormField(
                 controller: emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email',
-                ),
+                decoration: const InputDecoration(labelText: 'Email'),
+                validator: (value) {
+                  if (value == null || value.isEmpty || value.trim().isEmpty || value.trim().isEmpty || value.trim().isEmpty) {
+                    return 'Please enter a valid Email';
+                  }
+                  // You can add more validation logic here if needed
+                  return null; // Return null if the input is valid
+                },
               ),
               TextFormField(
                 controller: usernameController,
-                decoration: const InputDecoration(
-                  labelText: 'Username',
-                ),
+                decoration: const InputDecoration(labelText: 'Username'),
               ),
               TextFormField(
                 controller: passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                ),
+                decoration: const InputDecoration(labelText: 'Password',),
+              ),
+              TextFormField(
+                controller: password2Controller,
+                decoration: const InputDecoration(labelText: 'Confirm password'),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  Get.off(const HomeScreen());
-                },
-                child: const Text(
-                  'Log in',
-                ),
+                onPressed: () {},
+                child: const Text('Create User'),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    "Don't have an account",
-                  ),
+                  const Text("Don't have an account"),
                   TextButton(
-                    onPressed: () {
-                      Get.to(() => const RegisterScreen());
-                    },
-                    child: const Text(
-                      "Register",
-                    ),
+                    onPressed: () {},
+                    child: const Text("Register"),
                   ),
                 ],
               ),
