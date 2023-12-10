@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
+import '../controllers/FavouriteController.dart';
 import '../models/productsModel.dart';
 import '../services/fetchProducts.dart';
 
@@ -20,7 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(CartController());
+    final FavouriteController favouriteController =
+        Get.put(FavouriteController());
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -83,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Image.network(
                                   product.image ?? "",
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                 ),
                               ),
                             ),
@@ -106,17 +108,42 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
+                            const SizedBox(
+                              height: 12,
+                            ),
                           ],
                         ),
-                        const Positioned(
-                          top: 0,
-                          right: 0,
-                          child: Icon(
-                            Icons.favorite_border,
-                            color: Colors.red, // Set your desired color
-                            size: 24.0, // Set your desired size
+                        Obx(
+                          () => Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                              onPressed: () {
+                                favouriteController.toggleProduct(product);
+                              },
+                              icon: Icon(
+                                favouriteController.favouriteItems
+                                        .contains(product)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: Colors.red, // Set your desired color
+                                size: 24.0, // Set your desired size
+                              ),
+                            ),
                           ),
                         ),
+                        Positioned(
+                            bottom: 0,
+                            left: 0,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.amberAccent,
+                                ),
+                                Text(product.rating!.rate.toString() ?? ""),
+                              ],
+                            )),
                       ],
                     ),
                   ),

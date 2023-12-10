@@ -1,3 +1,4 @@
+import 'package:ecommerceapp/controllers/FavouriteController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -19,12 +20,12 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  late CartController cartController;
+  final CartController cartController = Get.find<CartController>();
+  final FavouriteController favouriteController =
+      Get.find<FavouriteController>();
 
   @override
   Widget build(BuildContext context) {
-    cartController = Get.find<CartController>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.product.title ?? ''),
@@ -90,12 +91,42 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16.0),
-                  Text(
-                    'Category: ${widget.product.category ?? ''}',
-                    style: const TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Category: ${widget.product.category ?? ''}',
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Obx(
+                        () => IconButton(
+                          onPressed: () {
+                            Get.closeAllSnackbars();
+                            favouriteController.toggleProduct(widget.product);
+                            Get.snackbar(
+                              "${widget.product.title}",
+                              favouriteController.favouriteItems
+                                      .contains(widget.product)
+                                  ? "Removed From cart"
+                                  : 'Added to Cart',
+                              backgroundColor: Colors.black54,
+                              colorText: Colors.white,
+                            );
+                          },
+                          icon: Icon(
+                            favouriteController.favouriteItems
+                                    .contains(widget.product)
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: Colors.red, // Set your desired color
+                            size: 24.0, // Set your desired size
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 20,
@@ -115,7 +146,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
                       onPressed: () {
-                        Get.off(()=> const CartScreen());
+                        Get.off(() => const CartScreen());
                       },
                       child: const Text('Cart Details'),
                     ),
@@ -129,7 +160,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  /*void _onCartPressed() {
+/*void _onCartPressed() {
     Get.to(() => const CartScreen());
   }*/
 
