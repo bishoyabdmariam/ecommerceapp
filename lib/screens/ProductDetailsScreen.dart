@@ -104,8 +104,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       Obx(
                         () => IconButton(
                           onPressed: () {
-                            Get.closeAllSnackbars();
-                            favouriteController.toggleProduct(widget.product);
+                            Get.closeCurrentSnackbar();
                             Get.snackbar(
                               "${widget.product.title}",
                               favouriteController.favouriteItems
@@ -115,6 +114,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               backgroundColor: Colors.black54,
                               colorText: Colors.white,
                             );
+                            favouriteController.toggleProduct(widget.product);
+
                           },
                           icon: Icon(
                             favouriteController.favouriteItems
