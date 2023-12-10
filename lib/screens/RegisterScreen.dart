@@ -1,20 +1,21 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:dio/dio.dart';
+import 'package:ecommerceapp/screens/LoginScreen.dart';
 import 'package:ecommerceapp/screens/homeScreen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import '../services/addUser.dart';
-import 'RegisterScreen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final dio = Dio();
   final addUser = AddUser(Dio());
   final TextEditingController emailController = TextEditingController();
@@ -24,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     emailController.text = "bishoyabdo236@gmail.com";
-    passwordController.text = "12366778888";
+    passwordController.text = "123";
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -93,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         margin: const EdgeInsets.only(top: 50),
                         child: const Center(
                           child: Text(
-                            "Login",
+                            "Register",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 40,
@@ -144,10 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               child: TextFormField(
                                 controller: emailController,
-                                decoration: InputDecoration(
+                                decoration:  InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email or Phone number",
-                                  hintStyle: TextStyle(color: Colors.grey[700]),
+                                  hintStyle:
+                                  TextStyle(color: Colors.grey[700]),
                                 ),
                                 validator: (value) {
                                   if (value == null ||
@@ -162,14 +164,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             Container(
-                              padding: const EdgeInsets.all(8.0),
+                              padding:  const EdgeInsets.all(8.0),
                               child: TextFormField(
                                 obscureText: true,
                                 controller: passwordController,
-                                decoration: InputDecoration(
+                                decoration:  InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
-                                  hintStyle: TextStyle(color: Colors.grey[700]),
+                                  hintStyle:
+                                  TextStyle(color: Colors.grey[700]),
                                 ),
                                 validator: (value) {
                                   if (value == null ||
@@ -195,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           if (_formKey.currentState?.validate() ?? false) {
                             // Perform login logic
-                            Get.off(() => const HomeScreen());
+                            Get.off(() => const LoginScreen());
                           }
                         },
                         child: Container(
@@ -209,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           child: const Center(
                             child: Text(
-                              "Login",
+                              "Register",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -244,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Get.off(() => const RegisterScreen());
                             },
                             child: const Text(
-                              "Register",
+                              "Login",
                               style: TextStyle(
                                 color: Color.fromRGBO(143, 148, 251, 1),
                               ),
