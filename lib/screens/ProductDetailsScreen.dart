@@ -1,9 +1,8 @@
-import 'package:ecommerceapp/controllers/FavouriteController.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import '../controllers/CartController.dart';
-import '../models/productsModel.dart';
+import '../controllers/FavouriteController.dart';
 import '../models/productsModel.dart';
 import 'CartScreen.dart';
 
@@ -23,6 +22,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final CartController cartController = Get.find<CartController>();
   final FavouriteController favouriteController =
       Get.find<FavouriteController>();
+
+  TextEditingController commentController = TextEditingController();
+
+  double userRating = 0; // You can set the initial user rating
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +118,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               colorText: Colors.white,
                             );
                             favouriteController.toggleProduct(widget.product);
-
                           },
                           icon: Icon(
                             favouriteController.favouriteItems
@@ -132,6 +134,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   const SizedBox(
                     height: 20,
                   ),
+                  Center(
+                    child: Column(
+                      children: [
+                        RatingBar.builder(
+                          tapOnlyMode: true,
+                          unratedColor: Colors.black87,
+                          initialRating: widget.product.rating?.rate ?? 0,
+                          ignoreGestures: true,
+                          updateOnDrag: false,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.favorite_border,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (newRate) {},
+                        ),
+                        Text('${widget.product.rating!.count!.toString()} users rated this item'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Text(
                     cartController.cartItems[widget.product] == null
                         ? "You don't have any of that item in Your Cart"
@@ -139,6 +165,101 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     style: const TextStyle(
                       fontSize: 16.0,
                     ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          double newRating =
+                              userRating; // Initialize with the current user rating
+                          return AlertDialog(
+                            title: const Text('Rate and Comment'),
+                            content: StatefulBuilder(
+                              builder:
+                                  (BuildContext context, StateSetter setState) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    RatingBar.builder(
+                                      initialRating: newRating,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemPadding: const EdgeInsets.symmetric(
+                                          horizontal: 2.0),
+                                      itemBuilder: (context, _) => const Icon(
+                                        Icons.favorite_border,
+                                        color: Colors.amber,
+                                        size: 10,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        setState(() {
+                                          newRating = rating;
+                                        });
+                                      },
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          "Your Rating is ",
+                                        ),
+                                        Text(
+                                          newRating.toString(),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    TextFormField(
+                                      decoration: const InputDecoration(
+                                        hintText: 'Write your comment...',
+                                      ),
+                                      maxLines: 3,
+                                      onChanged: (comment) {
+                                        // Handle the comment input if needed
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  // Handle the rating and comment submission
+                                  print('User rating: $newRating');
+                                  print(
+                                      'User comment: ${commentController.text}');
+
+                                  Get.snackbar(
+                                    'Rated!',
+                                    'You rated the product with $newRating stars and commented.',
+                                    backgroundColor: Colors.black54,
+                                    colorText: Colors.white,
+                                  );
+
+                                  Navigator.of(context)
+                                      .pop(); // Close the dialog
+                                },
+                                child: const Text('Submit'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: const Text('Rate Product'),
                   ),
                   const SizedBox(
                     height: 20,
@@ -160,19 +281,4 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       ),
     );
   }
-
-/*void _onCartPressed() {
-    Get.to(() => const CartScreen());
-  }*/
-
-/*
-  void launchUrl(Uri uri) async {
-    if (await canLaunch(uri.toString())) {
-      await launch(uri.toString());
-    } else {
-      throw 'Could not launch $uri';
-    }
-  }
-
-*/
 }
