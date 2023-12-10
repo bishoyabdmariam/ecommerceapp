@@ -1,4 +1,9 @@
+import 'package:ecommerceapp/controllers/CartController.dart';
+import 'package:ecommerceapp/screens/ProductDetailsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 import '../models/productsModel.dart';
 import '../services/fetchProducts.dart';
@@ -11,12 +16,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final ProductApi productApi = ProductApi();
+
   @override
   Widget build(BuildContext context) {
+    Get.put(CartController());
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: const Icon(Icons.shopping_cart_outlined),
+              onPressed: () {},
+            ),
+          ),
+        ],
         title: const Text('Product List'),
       ),
       body: FutureBuilder<List<Product>>(
@@ -30,14 +45,81 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: Text('No data available'));
           } else {
             final products = snapshot.data!;
-            return ListView.builder(
+            return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
               itemCount: products.length,
               itemBuilder: (context, index) {
                 final product = products[index];
-                return ListTile(
-                  title: Text(product.title ?? ''),
-                  subtitle: Text(product.description ?? ''),
-                  trailing: Text('\$${product.price ?? 0}'),
+                return InkWell(
+                  onTap: () async {
+                    Get.to(() => ProductDetailsScreen(product: product));
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              height: 80,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.network(
+                                  product.image ?? "",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Flexible(
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  product.title ?? '',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              "${product.price.toString()} \$",
+                              style: const TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Icon(
+                            Icons.favorite_border,
+                            color: Colors.red, // Set your desired color
+                            size: 24.0, // Set your desired size
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 );
               },
             );
